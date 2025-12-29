@@ -92,6 +92,4 @@ return false (no duplicates)
 **Complexity:**
 - **Time Complexity:** `O(n)` — single pass through array, O(1) set operations
 - **Space Complexity:** `O(n)` — storing up to n elements in the set
-
-
-```
+  
