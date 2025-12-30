@@ -46,47 +46,66 @@ Can you come up with an algorithm that is less than `O(n²)` time complexity?
 
 ### Solution 1: Brute Force
 
-**Approach:** Check every pair of elements to see if they sum to target.
+#### Intuition
+We can check every pair of different elements in the array and return the first pair that sums up to the target. This is the most intuitive approach but it's not the most efficient.
 
-**Visual Diagram:**
+#### Algorithm
+1. Iterate through the array with two nested loops to check every pair of different elements.
+2. If the sum of the pair equals the target, return the indices of the pair.
+3. If no such pair is found, return an empty array.
+4. There is guaranteed to be exactly one solution, so we will never return an empty array.
+
+#### Visual Example
 ```
 nums = [2, 7, 11, 15], target = 9
 
-Index:   0    1    2    3
-       +----+----+----+----+
-nums:  | 2  | 7  | 11 | 15 |
-       +----+----+----+----+
-         ↓    ↓
-         i    j
-         
 Check all pairs:
   i=0, j=1: nums[0] + nums[1] = 2 + 7 = 9 ✓ Found!
   
 return [0, 1]
 ```
 
-**Step-by-step:**
-```
-For i = 0:
-    For j = 1: 2 + 7 = 9 == target ✓ MATCH!
-    
-→ No need to continue, return [0, 1]
+#### Code
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        for (int i = 0; i < nums.size(); i++) {
+            for (int j = i + 1; j < nums.size(); j++) {
+                if (nums[i] + nums[j] == target) {
+                    return {i, j};
+                }
+            }
+        }
+        return {};
+    }
+};
 ```
 
-**Complexity:**
-- **Time Complexity:** `O(n²)` — two nested loops
-- **Space Complexity:** `O(1)` — no extra space needed
+#### Complexity Analysis
+
+| Metric | Complexity | Explanation |
+|--------|------------|-------------|
+| **Time** | O(n²) | Two nested loops checking every pair |
+| **Space** | O(1) | No extra space needed |
 
 ---
 
-### Solution 2: Two Pointer (with Sorting)
+### Solution 2: Sorting
 
-**Approach:** 
-1. Create array of (value, original_index) pairs
-2. Sort by value
-3. Use two pointers from both ends to find the pair
+#### Intuition
+We can sort the array and use two pointers to find the two numbers that sum up to the target. This is more efficient than the brute force approach. This approach is similar to the one used in Two Sum II.
 
-**Visual Diagram:**
+#### Algorithm
+1. Create a copy of the array and sort it in ascending order.
+2. Initialize two pointers, one at the beginning and one at the end of the array.
+3. Iterate through the array with the two pointers and check if the sum of the two numbers is equal to the target.
+4. If the sum is equal to the target, return the indices of the two numbers.
+5. If the sum is less than the target, move the left pointer to the right, which will increase the sum.
+6. If the sum is greater than the target, move the right pointer to the left, which will decrease the sum.
+7. There is guaranteed to be exactly one solution, so we will never return an empty array.
+
+#### Visual Example
 ```
 nums = [3, 2, 4], target = 6
 
@@ -99,60 +118,123 @@ Step 2: Sort by value
           left          right
 
 Step 3: Two pointer search
-        
-        Sorted values: [2, 3, 4]
-                        ↑     ↑
-                       L=0   R=2
-        
         sum = 2 + 4 = 6 == target ✓
         
         Original indices: [1, 2]
 ```
 
-**Step-by-step:**
-```
-sorted = [(2,1), (3,0), (4,2)]
-left = 0, right = 2
+#### Code
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        vector<pair<int, int>> A;
+        for (int i = 0; i < nums.size(); i++) {
+            A.push_back({nums[i], i});
+        }
 
-Iteration 1:
-  sum = sorted[0].val + sorted[2].val = 2 + 4 = 6
-  sum == target ✓
-  
-return [sorted[0].idx, sorted[2].idx] = [1, 2]
+        sort(A.begin(), A.end());
+
+        int i = 0, j = nums.size() - 1;
+        while (i < j) {
+            int cur = A[i].first + A[j].first;
+            if (cur == target) {
+                return {min(A[i].second, A[j].second),
+                        max(A[i].second, A[j].second)};
+            } else if (cur < target) {
+                i++;
+            } else {
+                j--;
+            }
+        }
+        return {};
+    }
+};
 ```
 
-**Complexity:**
-- **Time Complexity:** `O(n log n)` — due to sorting
-- **Space Complexity:** `O(n)` — storing pairs with indices
+#### Complexity Analysis
+
+| Metric | Complexity | Explanation |
+|--------|------------|-------------|
+| **Time** | O(n log n) | Dominated by sorting |
+| **Space** | O(n) | Storing pairs with original indices |
 
 ---
 
-### Solution 3: Hash Map (Optimal) ✅
+### Solution 3: Hash Map (Two Pass)
 
-**Approach:** Use a hash map to store each number and its index. For each element, check if `target - current` exists in the map.
+#### Intuition
+We can use a hash map to store the value and index of each element in the array. Then, we can iterate through the array and check if the complement of the current element exists in the hash map. The complement must be at a different index, because we can't use the same element twice.
 
-**Visual Diagram:**
+By using a hashmap, we can achieve a time complexity of O(n) because the insertion and lookup time of a hashmap is O(1).
+
+#### Algorithm
+1. Create a hash map to store the value and index of each element in the array.
+2. Iterate through the array and compute the complement of the current element, which is `target - nums[i]`.
+3. Check if the complement exists in the hash map.
+4. If it does, return the indices of the current element and its complement.
+5. If no such pair is found, return an empty array.
+
+#### Visual Example
 ```
 nums = [2, 7, 11, 15], target = 9
 
-                    HashMap
-Index:  0    1    2    3      +-------+-------+
-      +----+----+----+----+   | Value | Index |
-nums: | 2  | 7  | 11 | 15 |   +-------+-------+
-      +----+----+----+----+   |   2   |   0   |
-        ↑                     +-------+-------+
-        │
-        └── For num=2: need 9-2=7
-            7 not in map → store (2,0)
+Pass 1: Build map
+  Map: {2: 0, 7: 1, 11: 2, 15: 3}
 
-        ↑
-        └── For num=7: need 9-7=2
-            2 IS in map at index 0! ✓
-            
+Pass 2: Find complement
+  i=0: need 9-2=7, found at index 1 ✓
+  
 return [0, 1]
 ```
 
-**Step-by-step with Map State:**
+#### Code
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> indices;  // val -> index
+
+        for (int i = 0; i < nums.size(); i++) {
+            indices[nums[i]] = i;
+        }
+
+        for (int i = 0; i < nums.size(); i++) {
+            int diff = target - nums[i];
+            if (indices.count(diff) && indices[diff] != i) {
+                return {i, indices[diff]};
+            }
+        }
+
+        return {};
+    }
+};
+```
+
+#### Complexity Analysis
+
+| Metric | Complexity | Explanation |
+|--------|------------|-------------|
+| **Time** | O(n) | Two passes through the array |
+| **Space** | O(n) | Storing n elements in the hash map |
+
+---
+
+### Solution 4: Hash Map (One Pass) ✅
+
+#### Intuition
+We can solve the problem in a single pass by iterating through the array and checking if the complement of the current element exists in the hash map.
+
+If it does, we return the indices of the current element and its complement. If not, we store the current element in the hash map. This guarantees that we will never use the same element twice, but we still check every element in the array.
+
+#### Algorithm
+1. Create a hash map to store the value and index of each element in the array.
+2. Iterate through the array and compute the complement of the current element, which is `target - nums[i]`.
+3. Check if the complement exists in the hash map.
+4. If it does, return the indices of the current element and its complement.
+5. If no such pair is found, return an empty array.
+
+#### Visual Example
 ```
 nums = [2, 7, 11, 15], target = 9
 
@@ -167,7 +249,7 @@ nums = [2, 7, 11, 15], target = 9
 → return [0, 1]
 ```
 
-**Another Example with Table:**
+#### Another Example
 ```
 nums = [3, 2, 4], target = 6
 
@@ -183,19 +265,43 @@ nums = [3, 2, 4], target = 6
 → return [1, 2]
 ```
 
-**Complexity:**
-- **Time Complexity:** `O(n)` — single pass through array
-- **Space Complexity:** `O(n)` — storing up to n elements in the map
+#### Code
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        int n = nums.size();
+        unordered_map<int, int> prevMap;
+
+        for (int i = 0; i < n; i++) {
+            int diff = target - nums[i];
+            if (prevMap.find(diff) != prevMap.end()) {
+                return {prevMap[diff], i};
+            }
+            prevMap.insert({nums[i], i});
+        }
+        return {};
+    }
+};
+```
+
+#### Complexity Analysis
+
+| Metric | Complexity | Explanation |
+|--------|------------|-------------|
+| **Time** | O(n) | Single pass through the array |
+| **Space** | O(n) | Storing up to n elements in the hash map |
 
 ---
 
-## Solution Comparison
+## Summary Comparison
 
-| Solution | Time | Space | Notes |
-|----------|------|-------|-------|
-| Brute Force | O(n²) | O(1) | Simple but slow |
-| Two Pointer | O(n log n) | O(n) | Needs sorting, loses original indices |
-| **Hash Map** ✅ | **O(n)** | O(n) | **Optimal - single pass** |
+| Solution | Time Complexity | Space Complexity | Notes |
+|----------|-----------------|------------------|-------|
+| **Brute Force** | O(n²) | O(1) | Simple but slow |
+| **Sorting** | O(n log n) | O(n) | Uses two pointers |
+| **Hash Map (Two Pass)** | O(n) | O(n) | Build map first, then search |
+| **Hash Map (One Pass)** ✅ | O(n) | O(n) | Optimal - single pass |
 
 ---
 
