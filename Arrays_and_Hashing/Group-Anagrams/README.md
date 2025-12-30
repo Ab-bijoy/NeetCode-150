@@ -70,17 +70,17 @@ Anagrams become identical when their characters are sorted. For example, `"eat"`
 class Solution {
 public:
     vector<vector<string>> groupAnagrams(vector<string>& strs) {
-        unordered_map<string, vector<string>> res;
-        for (const auto& s : strs) {
-            string sortedS = s;
-            sort(sortedS.begin(), sortedS.end());
-            res[sortedS].push_back(s);
+        unordered_map<string, vector<string>> mp;
+        for (auto u : strs) {
+            string sorted_S = u;
+            sort(sorted_S.begin(), sorted_S.end());
+            mp[sorted_S].push_back(u);
         }
-        vector<vector<string>> result;
-        for (auto& pair : res) {
-            result.push_back(pair.second);
+        vector<vector<string>> res;
+        for (auto u : mp) {
+            res.push_back(u.second);
         }
-        return result;
+        return res;
     }
 };
 ```
@@ -118,23 +118,23 @@ Instead of sorting each string, we can represent every string by the frequency o
 class Solution {
 public:
     vector<vector<string>> groupAnagrams(vector<string>& strs) {
-        unordered_map<string, vector<string>> res;
-        for (const auto& s : strs) {
-            vector<int> count(26, 0);
-            for (char c : s) {
-                count[c - 'a']++;
+        unordered_map<string, vector<string>> mp;
+        for (auto u : strs) {
+            vector<int> frq(26, 0);
+            for (auto c : u) {
+                frq[c - 'a']++;
             }
-            string key = to_string(count[0]);
+            string key = to_string(frq[0]);
             for (int i = 1; i < 26; ++i) {
-                key += ',' + to_string(count[i]);
+                key += ',' + to_string(frq[i]);
             }
-            res[key].push_back(s);
+            mp[key].push_back(u);
         }
-        vector<vector<string>> result;
-        for (const auto& pair : res) {
-            result.push_back(pair.second);
+        vector<vector<string>> res;
+        for (auto u : mp) {
+            res.push_back(u.second);
         }
-        return result;
+        return res;
     }
 };
 ```
