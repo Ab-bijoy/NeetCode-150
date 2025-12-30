@@ -193,16 +193,16 @@ return [0, 1]
 class Solution {
 public:
     vector<int> twoSum(vector<int>& nums, int target) {
-        unordered_map<int, int> indices;  // val -> index
+        unordered_map<int, int> mp;  // val -> index
 
         for (int i = 0; i < nums.size(); i++) {
-            indices[nums[i]] = i;
+            mp[nums[i]] = i;
         }
 
         for (int i = 0; i < nums.size(); i++) {
             int diff = target - nums[i];
-            if (indices.count(diff) && indices[diff] != i) {
-                return {i, indices[diff]};
+            if (mp.count(diff) && mp[diff] != i) {
+                return {i, mp[diff]};
             }
         }
 
@@ -271,12 +271,12 @@ class Solution {
 public:
     vector<int> twoSum(vector<int>& nums, int target) {
         int n = nums.size();
-        unordered_map<int, int> prevMap;
+        unordered_map<int, int> mp;
 
         for (int i = 0; i < n; i++) {
             int diff = target - nums[i];
-            if (prevMap.find(diff) != prevMap.end()) {
-                return {prevMap[diff], i};
+            if (mp.find(diff) != mp.end()) {
+                return {mp[diff], i};
             }
             prevMap.insert({nums[i], i});
         }
@@ -294,7 +294,7 @@ public:
 
 ---
 
-## Summary Comparison
+## Complexity Comparison
 
 | Solution | Time Complexity | Space Complexity | Notes |
 |----------|-----------------|------------------|-------|

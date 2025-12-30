@@ -136,6 +136,7 @@ public:
         }
         return res;
     }
+    
 };
 ```
 
@@ -147,3 +148,14 @@ public:
 | **Space** | O(m) extra space, O(m * n) for the output list |
 
 > Where `m` is the number of strings and `n` is the length of the longest string.
+
+---
+
+## Complexity Comparison
+
+| Solution | Time Complexity | Space Complexity |
+|----------|-----------------|------------------|
+| **1. Sorting** | O(m * n log n) | O(m * n) |
+| **2. Hash Table (Character Frequency)** | O(m * n) | O(m * n) |
+
+> **Note:** The Hash Table approach is more efficient as it avoids the O(n log n) sorting overhead per string.

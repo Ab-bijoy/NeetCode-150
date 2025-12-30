@@ -110,7 +110,7 @@ return true
 ```cpp
 class Solution {
 public:
-    bool hasDuplicate(vector<int>& nums) {
+    bool containsDuplicate(vector<int>& nums) {
         sort(nums.begin(), nums.end());
         for (int i = 1; i < nums.size(); i++) {
             if (nums[i] == nums[i - 1]) {
@@ -173,13 +173,13 @@ return false (no duplicates)
 ```cpp
 class Solution {
 public:
-    bool hasDuplicate(vector<int>& nums) {
-        unordered_set<int> seen;
+    bool containsDuplicate(vector<int>& nums) {
+        unordered_set<int> freq;
         for (int num : nums) {
-            if (seen.count(num)) {
+            if (freq.count(num)) {
                 return true;
             }
-            seen.insert(num);
+            freq.insert(num);
         }
         return false;
     }
@@ -221,7 +221,7 @@ return true
 ```cpp
 class Solution {
 public:
-    bool hasDuplicate(vector<int>& nums) {
+    bool containsDuplicate(vector<int>& nums) {
         return unordered_set<int>(nums.begin(), nums.end()).size() < nums.size();
     }
 };
@@ -236,7 +236,7 @@ public:
 
 ---
 
-## Summary Comparison
+## Complexity Comparison
 
 | Solution | Time Complexity | Space Complexity | Notes |
 |----------|-----------------|------------------|-------|
