@@ -102,7 +102,7 @@ public:
 };
 
 // ============================================================================
-// Solution 4: Prefix & Suffix (Optimal) ⭐
+// Solution 4: Prefix & Suffix (Optimal) 
 // Time Complexity: O(n)
 // Space Complexity: O(1) extra space, O(n) for output array
 // ============================================================================
